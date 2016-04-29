@@ -7,15 +7,16 @@ import javax.swing.Timer;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class GameEngine implements KeyListener{
+public class GameEngine implements KeyListener, GameReporter{
 		GamePanel gp;
 
 		private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 		private SpaceShip v;	
 
 		private Timer timer;
+		private long score = 0;
 		private double difficulty = 0.1;
-		private double easily = 0.1;
+		private double easily = difficulty;
 
 		public GameEngine(GamePanel gp, SpaceShip v) {
 			this.gp = gp;
@@ -47,7 +48,7 @@ public class GameEngine implements KeyListener{
 		private void process(){
 			if(Math.random() < difficulty){
 				generateEnemy();
-		}
+			}
 
 			Iterator<Enemy> e_iter = enemies.iterator();
 			while(e_iter.hasNext()){
@@ -57,10 +58,11 @@ public class GameEngine implements KeyListener{
 				if(!e.isAlive()){
 					e_iter.remove();
 					gp.sprites.remove(e);
+					score += 100;
 				}
 			}
 		
-			gp.updateGameUI();
+			gp.updateGameUI(this);
 
 			Rectangle2D.Double vr = v.getRectangle();
 			Rectangle2D.Double er;
@@ -74,27 +76,31 @@ public class GameEngine implements KeyListener{
 
 		}
 
-		public void die(){
-			timer.stop();
-		}
+	public void die(){
+		timer.stop();
+	}
 
-		void controlVehicle(KeyEvent e) {
-			switch (e.getKeyCode()) {
-				case KeyEvent.VK_LEFT:
-					v.move(-1);
-					break;
-				case KeyEvent.VK_RIGHT:
-					v.move(1);
-					break;
-				case KeyEvent.VK_D:
-					difficulty += 0.1;
-					break;
-				case KeyEvent.VK_F:
-					easily -= 0.1;
-					break;
-			}
+	void controlVehicle(KeyEvent e) {
+		switch (e.getKeyCode()) {
+			case KeyEvent.VK_LEFT:
+				v.move(-1);
+				break;
+			case KeyEvent.VK_RIGHT:
+				v.move(1);
+				break;
+			case KeyEvent.VK_D:
+				difficulty += 0.1;
+				break;
+			case KeyEvent.VK_F:
+				easily -= 0.1;
+				break;
 		}
+	}
 	
+	public long getScore(){
+		return score;
+	}
+
 	@Override
 	public void keyPressed(KeyEvent e) {
 		controlVehicle(e);
