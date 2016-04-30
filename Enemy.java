@@ -1,6 +1,10 @@
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 public class Enemy extends Sprite{
 	public static final int Y_TO_FADE = 400;
@@ -8,9 +12,17 @@ public class Enemy extends Sprite{
 	
 	private int step = 12;
 	private boolean alive = true;
+
+	BufferedImage star;
 	
 	public Enemy(int x, int y) {
-		super(x, y, 5, 10);
+		super(x, y, 50, 50);
+		try{
+			star = ImageIO.read(new File("../5610110635/image/rain4.png"));
+		}
+		catch(IOException d){
+			System.out.println("can't bufferimage");
+		}
 		
 	}
 
@@ -22,8 +34,9 @@ public class Enemy extends Sprite{
 			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 
 					(float)(Y_TO_DIE - y)/(Y_TO_DIE - Y_TO_FADE)));
 		}
-		g.setColor(Color.RED);
-		g.fillRect(x, y, width, height);
+		// g.setColor(Color.RED);
+		// g.fillRect(x, y, width, height);
+		g.drawImage(star,x,y,width,height,null);
 		
 	}
 
